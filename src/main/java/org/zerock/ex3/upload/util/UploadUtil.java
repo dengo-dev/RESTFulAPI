@@ -28,7 +28,7 @@ public class UploadUtil {
     File tempFolder = new File(uploadPath);
     
     if (tempFolder.exists() == false) {
-      tempFolder.mkdir()
+      tempFolder.mkdir();
     }
     
     uploadPath = tempFolder.getAbsolutePath();
