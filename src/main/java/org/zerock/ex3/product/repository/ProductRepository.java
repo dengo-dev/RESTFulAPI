@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.zerock.ex3.product.dto.ProductDTO;
 import org.zerock.ex3.product.entity.ProductEntity;
+import org.zerock.ex3.product.repository.search.ProductSearch;
 
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long>, ProductSearch {
   
   //관련된 엔티티나 값 객체등의 로딩을 조절하기위해서 사용함.
   //attributePaths를 이용해서 같이 로딩하려는 속성을 지정하고
