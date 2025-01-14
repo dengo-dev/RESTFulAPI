@@ -22,5 +22,5 @@ public class FileController {
   public ResponseEntity<List<String>> uploadFile(@RequestParam("files") MultipartFile[] files) {
     log.info("upload file....");
     return null;
-  } 
+  }
 }
