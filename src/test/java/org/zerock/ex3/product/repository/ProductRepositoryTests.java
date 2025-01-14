@@ -117,4 +117,16 @@ public class ProductRepositoryTests {
       
     });
   }
+  
+  @Transactional
+  @Test
+  public void testListWithAllImages() {
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("pno").descending());
+    Page<ProductDTO> result = productRepository.listWithAllImages(pageable);
+    
+    result.getContent().forEach(productDTO -> {
+      System.out.println(productDTO);
+      
+    });
+  }
 }

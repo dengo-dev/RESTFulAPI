@@ -3,6 +3,7 @@ package org.zerock.ex3.product.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -42,6 +43,7 @@ public class ProductEntity {
   @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "tbl_product_images", joinColumns = @JoinColumn(name = "pno"))
   @Builder.Default
+  @BatchSize(size = 100) //size(100은 한페이지당 100개)속성을 지정해서 한 번에 몇개의 데이터를 IN(?,?)과 같은 형식으로 만들지를 지정
   private SortedSet<ProductImage> images = new TreeSet<>();
   
   public void addImage(String fileName) {
