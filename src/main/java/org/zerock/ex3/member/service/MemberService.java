@@ -34,4 +34,10 @@ public class MemberService {
     }
     return new MemberDTO(memberEntity);
   }
+
+  public MemberDTO getByMid(String mid) {
+    Optional<MemberEntity> result = memberRepository.findById(mid);
+    MemberEntity memberEntity = result.orElseThrow(MemberExceptions.NOT_FOUND::get);
+    return new MemberDTO(memberEntity);
+  }
 }
