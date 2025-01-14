@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.ex3.upload.exception.UploadNotSupportedException;
+import org.zerock.ex3.upload.util.UploadUtil;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
 public class FileController {
+  
+  private final UploadUtil uploadUtil;
   
   @PostMapping("/upload")
   public ResponseEntity<List<String>> uploadFile(@RequestParam("files") MultipartFile[] files) {
@@ -31,7 +34,9 @@ public class FileController {
       log.info("name: " + file.getOriginalFilename());
       checkFileType(file.getOriginalFilename());
     }
-    return null;
+    List<String> result = uploadUtil.upload(files);
+    
+    return ResponseEntity.ok(result);
   }
   
   private void checkFileType(String fileName) throws UploadNotSupportedException {
