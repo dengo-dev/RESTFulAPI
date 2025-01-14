@@ -1,5 +1,6 @@
 HELP.md
 .build
+.upload
 .idea
 ./build
 ./gradlew
