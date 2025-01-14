@@ -10,4 +10,6 @@ public interface ProductSearch {
   Page<ProductListDTO> list(Pageable pageable);
   
   Page<ProductDTO> listWithAllImages(Pageable pageable);
+  
+  Page<ProductDTO> listFetchAllImages(Pageable pageable);
 }

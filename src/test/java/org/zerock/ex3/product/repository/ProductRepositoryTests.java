@@ -129,4 +129,15 @@ public class ProductRepositoryTests {
       
     });
   }
+  
+  @Test
+  public void testListFetchAllImages() {
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("pno").descending());
+    
+    Page<ProductDTO> result = productRepository.listFetchAllImages(pageable);
+    
+    for (ProductDTO productDTO : result.getContent()) {
+      System.out.println(productDTO);
+    }
+  }
 }

@@ -1,5 +1,7 @@
 package org.zerock.ex3.product.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +24,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
   //JPA에서 페치조인은 연관된 엔티티들을 한 번에 조회할 때 사용
   @Query("select p from ProductEntity  p join fetch p.images pi where p.pno= :pno")
   Optional<ProductDTO> getProductDTO(@Param("pno") Long pno);
+  
+  @Query("select p from ProductEntity p join fetch p.images pi ")
+  Page<ProductDTO> listQuery(Pageable pageable);
 }

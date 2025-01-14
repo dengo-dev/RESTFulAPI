@@ -71,4 +71,31 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
     
     return new PageImpl<>(dtoList, pageable, count);
   }
+  
+  @Override
+  public Page<ProductDTO> listFetchAllImages(Pageable pageable) {
+    QProductEntity productEntity = QProductEntity.productEntity;
+    QProductImage productImage = QProductImage.productImage;
+    
+    JPQLQuery<ProductEntity> query = from(productEntity);
+    
+    //@BatchSize를 이용했을 때 Projections를 사용할 수 없지만 페치 조인은 사용가능
+    query.leftJoin(productEntity.images, productImage).fetchJoin();
+    
+    this.getQuerydsl().applyPagination(pageable, query);
+    
+    List<ProductEntity> entityList = query.fetch();
+    
+    List<ProductDTO> dtoList = entityList.stream().map(ProductDTO::new).toList();
+    
+    long count = query.fetchCount();
+    
+//    for (ProductEntity entity : entityList) {
+//      System.out.println(entity);
+//      System.out.println(entity.getImages());
+//      System.out.println("--------------------------");
+//
+//    }
+    return new PageImpl<>(dtoList, pageable, count);
+  }
 }
