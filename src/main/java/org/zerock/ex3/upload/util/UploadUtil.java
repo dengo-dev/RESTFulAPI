@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
+import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,6 +57,11 @@ public class UploadUtil {
            OutputStream out = new FileOutputStream(uploadPath + File.separator + saveFileName)
       ) {
         FileCopyUtils.copy(in, out);
+        
+        Thumbnails.of(new File(uploadPath + File.separator + saveFileName))
+            .size(200, 200)
+            .toFile(uploadPath + File.separator + "s_" + saveFileName);
+        
         result.add(saveFileName);
       } catch (Exception e) {
         log.error(e.getMessage());

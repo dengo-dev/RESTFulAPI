@@ -37,6 +37,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
     
     String path = request.getRequestURI();
     
+    // /api로 시작하지 않는다면 동작하지 않음.
     if (!path.startsWith("/api/")) {
       return true;
     }
