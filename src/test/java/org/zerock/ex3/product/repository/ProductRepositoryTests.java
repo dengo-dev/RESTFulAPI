@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.ex3.product.dto.ProductDTO;
 import org.zerock.ex3.product.entity.ProductEntity;
 
 import java.util.Optional;
@@ -85,5 +86,18 @@ public class ProductRepositoryTests {
     
     //변경감지시에는 필요없음
 //    productRepository.save(productEntity)
+  }
+  
+  @Test
+  public void testReadDTO() {
+    //반드시 db에 있는 번호로
+    Long pno = 10L;
+    
+    Optional<ProductDTO> result = productRepository.getProductDTO(pno);
+    
+    ProductDTO productDTO = result.get();
+    
+    System.out.println(productDTO);
+    
   }
 }
