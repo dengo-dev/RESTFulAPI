@@ -4,10 +4,7 @@ package org.zerock.ex3.upload.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.ex3.upload.exception.UploadNotSupportedException;
 import org.zerock.ex3.upload.util.UploadUtil;
@@ -41,12 +38,21 @@ public class FileController {
   
   private void checkFileType(String fileName) throws UploadNotSupportedException {
     //jpg,gif,png,bmp
-    String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+    String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
     
     String regExp = "^(jpg|jpeg|JPG|JPEG|png|PNG|gif|GIF|bmp|BMP)";
     
     if (!suffix.matches(regExp)) {
       throw new UploadNotSupportedException("File type not supported: " + suffix);
     }
+  }
+  
+  @DeleteMapping("/delete/{fileName}")
+  public ResponseEntity<Void> deleteFile(@PathVariable(name = "fileName") String fileName) {
+    log.info("delete file: " + fileName);
+    
+    uploadUtil.deleteFile(fileName);
+    
+    return ResponseEntity.ok().build();
   }
 }
