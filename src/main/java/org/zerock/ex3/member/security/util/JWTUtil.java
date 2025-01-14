@@ -1,5 +1,6 @@
 package org.zerock.ex3.member.security.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
@@ -40,5 +41,22 @@ public class JWTUtil {
                     .plusMinutes(min).toInstant()))).claims(valueMap)
             .signWith(key)
             .compact();  //최종적으로 JWT를 생성하고, 이를 compact(압축된) 형태로 반환
+  }
+
+  public Map<String, Object> validateToken(String token) {
+    SecretKey key = null;
+
+    try {
+      key = Keys.hmacShaKeyFor(JWTUtil.key.getBytes("UTF-8"));
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
+    Claims claims = Jwts.parser().verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+
+    log.info("claims: " + claims);
+    return claims;
   }
 }
