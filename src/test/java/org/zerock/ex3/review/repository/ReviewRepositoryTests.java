@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.review.entity.ReviewEntity;
+import org.zerock.ex3.review.exception.ReviewExceptions;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -67,5 +68,17 @@ public class ReviewRepositoryTests {
   public void testRemove() {  // 단방향 참조이기 때문에 댓글만 삭제하면 된다.
     Long rno = 1L;
     reviewRepository.deleteById(rno);
+  }
+
+  @Transactional
+  @Test
+  @Commit
+  public void testUpdate() {
+    Long rno = 2L;
+
+    ReviewEntity reviewEntity = reviewRepository.findById(rno).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
+    reviewEntity.changeReviewText("변경된 리뷰 내용");
+    reviewEntity.changeScore(3);
+    
   }
 }
