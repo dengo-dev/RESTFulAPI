@@ -40,4 +40,12 @@ public class ReviewEntity {
 
   @LastModifiedDate
   private LocalDateTime modifiedDate;
+
+  public void changeReviewText(String reviewText) {
+    this.reviewText = reviewText;
+  }
+
+  public void changeScore(int score) {
+    this.score = score;
+  }
 }

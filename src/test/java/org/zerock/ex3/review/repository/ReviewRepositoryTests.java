@@ -32,7 +32,30 @@ public class ReviewRepositoryTests {
             .build();
 
     reviewRepository.save(reviewEntity);
+  }
 
+  @Transactional
+  @Test
+  public void testRead() {
+    Long rno = 1L;  //DB에 있는 리뷰 번호
 
+    reviewRepository.findById(rno).ifPresent(reviewEntity -> {
+      System.out.println(reviewEntity);
+      System.out.println(reviewEntity.getProductEntity());
+
+    });
+
+  }
+
+  @Test
+  public void testGetWithProduct() {
+    Long rno = 1L;
+
+    //fetch join
+    reviewRepository.getWithProduct(rno).ifPresent(reviewEntity -> {
+      System.out.println(reviewEntity);
+      System.out.println(reviewEntity.getProductEntity());
+
+    });
   }
 }
