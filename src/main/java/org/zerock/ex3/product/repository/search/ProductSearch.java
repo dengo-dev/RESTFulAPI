@@ -12,4 +12,6 @@ public interface ProductSearch {
   Page<ProductDTO> listWithAllImages(Pageable pageable);
   
   Page<ProductDTO> listFetchAllImages(Pageable pageable);
+
+  Page<ProductListDTO> listWithReviewCount(Pageable pageable);
 }

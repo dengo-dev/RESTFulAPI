@@ -29,6 +29,9 @@ public class ProductDTO {
   private String writer;
   
   private List<String> imageList;
+
+  //review count
+  private long reviewCount;
   
   
   //productEntity를 파라미터로 상요하는 경우는 ProductRepository에서 직접 DTO를 반환하기 위해서

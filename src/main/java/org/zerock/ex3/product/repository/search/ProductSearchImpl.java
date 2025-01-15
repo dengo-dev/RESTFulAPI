@@ -11,6 +11,7 @@ import org.zerock.ex3.product.dto.ProductListDTO;
 import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.product.entity.QProductEntity;
 import org.zerock.ex3.product.entity.QProductImage;
+import org.zerock.ex3.review.entity.QReviewEntity;
 
 import java.util.List;
 
@@ -97,5 +98,46 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
 //
 //    }
     return new PageImpl<>(dtoList, pageable, count);
+  }
+
+  @Override
+  public Page<ProductListDTO> listWithReviewCount(Pageable pageable) {
+    QProductEntity productEntity = QProductEntity.productEntity;
+    QReviewEntity reviewEntity = QReviewEntity.reviewEntity;
+    QProductImage productImage = QProductImage.productImage;
+
+    //QReviewEntity 조인처리
+    //리뷰가 존재하지 않을 수도 있기 떄문에 left join처리
+    JPQLQuery<ProductEntity> query = from(productEntity);
+    query.leftJoin(reviewEntity).on(reviewEntity.productEntity.eq(productEntity));
+    query.leftJoin(productEntity.images, productImage);
+
+    //where productImage.idx = 0
+    query.where(productImage.idx.eq(0));
+
+    this.getQuerydsl().applyPagination(pageable, query);
+
+    //group by
+    query.groupBy(productEntity);
+
+
+    //Long pno, String pname, int price, String writer, String productImage
+    JPQLQuery<ProductListDTO> dtojpqlQuery = query.select(Projections.bean(ProductListDTO.class,
+            productEntity.pno,
+            productEntity.pname,
+            productEntity.price,
+            productEntity.writer,
+            productImage.fileName.as("productImage"),
+            reviewEntity.countDistinct().as("reviewCount")));
+
+
+    this.getQuerydsl().applyPagination(pageable, dtojpqlQuery);
+
+    java.util.List<ProductListDTO> dtoList = dtojpqlQuery.fetch();
+
+    long count = dtojpqlQuery.fetchCount();
+
+    return new PageImpl<>(dtoList, pageable, count);
+
   }
 }
