@@ -3,9 +3,14 @@ package org.zerock.ex3.product.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.ex3.product.dto.PageRequestDTO;
 import org.zerock.ex3.product.dto.ProductDTO;
+import org.zerock.ex3.product.dto.ProductListDTO;
 import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.product.exception.ProductExceptions;
 import org.zerock.ex3.product.repository.ProductRepository;
@@ -95,5 +100,19 @@ public class ProductService {
       throw ProductExceptions.PRODUCT_NOT_MODIFIED.get();
     }
 
+  }
+
+  public Page<ProductListDTO> getList(PageRequestDTO pageRequestDTO) {
+    log.info("getList................");
+    log.info(pageRequestDTO);
+
+    try {
+      Pageable pageable = pageRequestDTO.getPageable(Sort.by("pno").descending());
+      return productRepository.list(pageable);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw ProductExceptions.PRODUCT_NOT_FETCHED.get();
+    }
+    
   }
 }
