@@ -31,7 +31,7 @@ public class ReviewRepositoryTests {
 
   @Test
   public void testInsert() {
-    Long pno = 51L;
+    Long pno = 50L;
 
     ProductEntity productEntity = ProductEntity.builder().pno(pno).build();
 
