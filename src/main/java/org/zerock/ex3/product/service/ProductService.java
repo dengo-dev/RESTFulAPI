@@ -10,6 +10,9 @@ import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.product.exception.ProductExceptions;
 import org.zerock.ex3.product.repository.ProductRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -31,6 +34,66 @@ public class ProductService {
       log.error(e.getMessage());
       throw ProductExceptions.PRODUCT_NOT_REGISTERED.get();
     }
-    
+
+  }
+
+  @Transactional
+  public ProductDTO read(Long pno) {
+    log.info("read..............");
+    log.info(pno);
+
+    Optional<ProductEntity> result = productRepository.getProduct(pno);
+
+    ProductEntity productEntity = result.orElseThrow(ProductExceptions.PRODUCT_NOT_FOUND::get);
+    return new ProductDTO(productEntity);
+  }
+
+  public void remove(Long pno) {
+    log.info("remove...........");
+    log.info(pno);
+
+    Optional<ProductEntity> result = productRepository.findById(pno);
+    ProductEntity productEntity = result.orElseThrow(ProductExceptions.PRODUCT_NOT_FOUND::get);
+    try {
+      productRepository.delete(productEntity);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw ProductExceptions.PRODUCT_NOT_REMOVED.get();
+    }
+
+  }
+
+  public ProductDTO modify(ProductDTO productDTO) {
+    log.info("modify..............");
+    log.info(productDTO);
+
+    Optional<ProductEntity> result = productRepository.findById(productDTO.getPno());
+
+    ProductEntity productEntity = result.orElseThrow(ProductExceptions.PRODUCT_NOT_FOUND::get);
+
+    try {
+      //상품 정보 수정
+      productEntity.changePrice(productDTO.getPrice());
+
+      productEntity.changeTitle(productDTO.getPname());
+
+      //기존 이미지들 삭제
+      productEntity.clearImages();
+
+      //새로운 이지미들 추가
+      List<String> fileNames = productDTO.getImageList();
+      if (fileNames != null && !fileNames.isEmpty()) {
+        fileNames.forEach(productEntity::addImage);
+
+      }
+
+      productRepository.save(productEntity);
+
+      return new ProductDTO(productEntity);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw ProductExceptions.PRODUCT_NOT_MODIFIED.get();
+    }
+
   }
 }
