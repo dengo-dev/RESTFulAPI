@@ -80,7 +80,7 @@ public class CartRepositoryTests {
 
     if (cartItemEntity.getQuantity() <= 0) {
       cartItemRepository.delete(cartItemEntity);
-      
+
     }
   }
 }
