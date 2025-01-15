@@ -4,9 +4,13 @@ package org.zerock.ex3.review.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.ex3.review.dto.ReviewDTO;
+import org.zerock.ex3.review.dto.ReviewPageRequestDTO;
 import org.zerock.ex3.review.entity.ReviewEntity;
 import org.zerock.ex3.review.exception.ReviewExceptions;
 import org.zerock.ex3.review.repository.ReviewRepository;
@@ -66,6 +70,13 @@ public class ReviewService {
       log.error(e.getMessage());
       throw ReviewExceptions.REVEIW_NOT_MODIFIED.get();
     }
+  }
+
+  public Page<ReviewDTO> getList(ReviewPageRequestDTO reviewPageRequestDTO) {
+    Long pno = reviewPageRequestDTO.getPno();
+    Pageable pageable = reviewPageRequestDTO.getPageable(Sort.by("rno").descending());
+
+    return reviewRepository.getListByPno(pno, pageable);
   }
 }
 
