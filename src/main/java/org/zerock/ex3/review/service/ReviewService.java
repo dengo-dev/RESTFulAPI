@@ -60,7 +60,7 @@ public class ReviewService {
   }
 
   public ReviewDTO modify(ReviewDTO reviewDTO) {
-    ReviewEntity reviewEntity = reviewRepository.findById(reviewDTO).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
+    ReviewEntity reviewEntity = reviewRepository.findById(reviewDTO.getRno()).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
 
     try {
       reviewEntity.changeReviewText(reviewDTO.getReviewText());
