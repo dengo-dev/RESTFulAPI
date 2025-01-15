@@ -36,4 +36,36 @@ public class ReviewService {
     }
 
   }
+  public ReviewDTO read(Long rno) {
+    ReviewEntity reviewEntity = reviewRepository.findById(rno).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
+
+    return new ReviewDTO(reviewEntity);
+  }
+
+  public void remove(Long rno) {
+    ReviewEntity reviewEntity = reviewRepository.findById(rno).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
+
+    try {
+      reviewRepository.delete(reviewEntity);
+
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw ReviewExceptions.REVIEW_NOT_REMOVED.get();
+    }
+
+  }
+
+  public ReviewDTO modify(ReviewDTO reviewDTO) {
+    ReviewEntity reviewEntity = reviewRepository.findById(reviewDTO).orElseThrow(ReviewExceptions.REVIEW_NOT_FOUND::get);
+
+    try {
+      reviewEntity.changeReviewText(reviewDTO.getReviewText());
+      reviewEntity.changeScore(reviewDTO.getScore());
+      return new ReviewDTO(reviewEntity);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw ReviewExceptions.REVEIW_NOT_MODIFIED.get();
+    }
+  }
 }
+
