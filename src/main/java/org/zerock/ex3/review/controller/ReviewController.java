@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.ex3.review.dto.ReviewDTO;
+import org.zerock.ex3.review.dto.ReviewPageRequestDTO;
 import org.zerock.ex3.review.exception.ReviewExceptions;
 import org.zerock.ex3.review.service.ReviewService;
 
@@ -78,5 +79,13 @@ public class ReviewController {
       throw ReviewExceptions.REVIEWER_MISMATCH.get();
     }
     return ResponseEntity.ok().body(reviewService.modify(reviewDTO));
+  }
+
+  @GetMapping("/{pno}/list")
+  public ResponseEntity<?> list(@PathVariable("pno") Long pno,
+                                @Validated ReviewPageRequestDTO pageRequestDTO) {
+    pageRequestDTO.setPno(pno);
+
+    return ResponseEntity.ok(reviewService.getList(pageRequestDTO));
   }
 }
