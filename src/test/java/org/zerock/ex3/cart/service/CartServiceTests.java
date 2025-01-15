@@ -4,6 +4,7 @@ package org.zerock.ex3.cart.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.zerock.ex3.cart.dto.AddCartItemDTO;
 import org.zerock.ex3.cart.dto.CartItemDTO;
 
 import java.util.List;
@@ -24,5 +25,21 @@ public class CartServiceTests {
       System.out.println(cartItemDTO);
       
     });
+  }
+  
+  @Test
+  public void testRegisterItem() {
+    String mid = "user22";
+    Long pno = 40L;
+    int qty = 2;
+    
+    AddCartItemDTO addCartItemDTO = AddCartItemDTO.builder()
+        .holder(mid)
+        .pno(pno)
+        .quantity(qty)
+        .build();
+    
+    cartService.registerItem(addCartItemDTO);
+    
   }
 }

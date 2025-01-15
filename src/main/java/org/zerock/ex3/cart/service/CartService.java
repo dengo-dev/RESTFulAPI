@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.ex3.cart.dto.AddCartItemDTO;
 import org.zerock.ex3.cart.dto.CartItemDTO;
+import org.zerock.ex3.cart.entity.CartEntity;
 import org.zerock.ex3.cart.entity.CartItemEntity;
+import org.zerock.ex3.cart.exception.CartTaskException;
 import org.zerock.ex3.cart.repository.CartItemRepository;
 import org.zerock.ex3.cart.repository.CartRepository;
+import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.product.repository.ProductRepository;
 
 import java.util.ArrayList;
@@ -57,5 +61,33 @@ public class CartService {
         .image(cartItemEntity.getProduct().getImages().first().getFileName())
         .quantity(cartItemEntity.getQuantity())
         .build();
+  }
+  
+  public void registerItem(AddCartItemDTO addCartItemDTO) {
+    String mid = addCartItemDTO.getHolder();
+    Long pno = addCartItemDTO.getPno();
+    int quantity = addCartItemDTO.getQuantity();
+    
+    Optional<CartEntity> cartResult = cartRepository.findByHolder(mid);
+    
+    CartEntity cartEntity = cartResult.orElseGet(() -> {
+      CartEntity cart = CartEntity.builder().holder(mid).build();
+      return cartRepository.save(cart);
+    });
+    
+    ProductEntity productEntity = productRepository.findById(pno).orElseThrow(CartTaskException.Items.NoT_FOUND_PRODUCT::value);
+    
+    CartItemEntity cartItemEntity = CartItemEntity.builder()
+        .cart(cartEntity)
+        .product(productEntity)
+        .quantity(quantity)
+        .build();
+    
+    try {
+      cartItemRepository.save(cartItemEntity);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      throw CartTaskException.Items.CART_ITEM_REGISTER_FAIL.value();
+    }
   }
 }
