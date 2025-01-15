@@ -7,11 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.ex3.product.dto.PageRequestDTO;
+import org.zerock.ex3.product.dto.ProductDTO;
 import org.zerock.ex3.product.dto.ProductListDTO;
+import org.zerock.ex3.product.exception.ProductExceptions;
 import org.zerock.ex3.product.service.ProductService;
 
 import java.security.Principal;
@@ -31,4 +31,22 @@ public class ProductController {
 
     return ResponseEntity.ok(productService.getList(pageRequestDTO));
   }
+
+  @PostMapping("")
+  public ResponseEntity<ProductDTO> register(
+          @RequestBody @Validated ProductDTO productDTO, Principal principal
+  ) {
+    log.info("register...........");
+    log.info(productDTO);
+
+    if (productDTO.getImageList() == null || productDTO.getImageList().isEmpty()) {
+      throw ProductExceptions.PRODUCT_NO_IMAGE.get();
+    }
+
+    if (!principal.getName().equals(productDTO.getWriter())) {
+      throw ProductExceptions.PRODUCT_WRITER_ERROR.get();
+    }
+    return ResponseEntity.ok(productService.register(productDTO));
+  }
+
 }
