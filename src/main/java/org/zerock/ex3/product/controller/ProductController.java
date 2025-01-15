@@ -85,4 +85,25 @@ public class ProductController {
     return ResponseEntity.ok(Map.of("result", "success"));
   }
 
+  @PutMapping("/{pno}")
+  public ResponseEntity<ProductDTO> modify(@PathVariable("pno") Long pno, @RequestBody @Validated
+                                           ProductDTO productDTO,
+                                           Authentication authentication) {
+    log.info("modify............");
+    log.info(pno);
+    log.info(productDTO);
+    log.info(authentication.getName());
+
+    if (!pno.equals(productDTO.getPno())) {
+      throw ProductExceptions.PRODUCT_NOT_FOUND.get();
+    }
+    if (productDTO.getImageList() == null || productDTO.getImageList().isEmpty()) {
+      throw ProductExceptions.PRODUCT_NO_IMAGE.get();
+    }
+    if (!productDTO.getWriter().equals(authentication.getName())) {
+      throw ProductExceptions.PRODUCT_WRITER_ERROR.get();
+    }
+
+    return ResponseEntity.ok(productService.modify(productDTO));
+  }
 }
