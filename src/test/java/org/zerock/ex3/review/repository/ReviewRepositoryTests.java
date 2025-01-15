@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.zerock.ex3.product.dto.ProductDTO;
 import org.zerock.ex3.product.dto.ProductListDTO;
 import org.zerock.ex3.product.entity.ProductEntity;
 import org.zerock.ex3.product.repository.ProductRepository;
@@ -111,6 +112,18 @@ public class ReviewRepositoryTests {
     result.getContent().forEach(productListDTO -> {
       System.out.println(productListDTO);
 
+    });
+  }
+
+  @Transactional
+  @Test
+  public void testListWithAllImagesReviewCount() {
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("pno").descending());
+
+    Page<ProductDTO> result = productRepository.listWithAllImagesReviewCount(pageable);
+
+    result.getContent().forEach(productDTO -> {
+      System.out.println(productDTO);
     });
   }
 }

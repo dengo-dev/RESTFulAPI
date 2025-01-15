@@ -1,5 +1,6 @@
 package org.zerock.ex3.product.repository.search;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
@@ -139,5 +140,35 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
 
     return new PageImpl<>(dtoList, pageable, count);
 
+  }
+
+  @Override
+  public Page<ProductDTO> listWithAllImagesReviewCount(Pageable pageable) {
+    QProductEntity productEntity = QProductEntity.productEntity;
+    QReviewEntity reviewEntity = QReviewEntity.reviewEntity;
+
+    JPQLQuery<ProductEntity> query = from(productEntity);
+    query.leftJoin(reviewEntity).on(reviewEntity.productEntity.eq(productEntity));
+
+    this.getQuerydsl().applyPagination(pageable, query);
+
+    query.groupBy(productEntity);
+
+    JPQLQuery<Tuple> tupleJPQLQuery = query.select(productEntity, reviewEntity.countDistinct());
+
+    List<Tuple> result = tupleJPQLQuery.fetch();
+
+    List<ProductDTO> dtoList = result.stream().map(tuple -> {
+      ProductEntity product = tuple.get(0, ProductEntity.class);
+      long count = tuple.get(1, Long.class);
+
+      ProductDTO dto = new ProductDTO(product);
+
+      dto.setReviewCount(count);
+
+      return dto;
+    }).toList();
+
+    return new PageImpl<>(dtoList, pageable, tupleJPQLQuery.fetchCount());
   }
 }
