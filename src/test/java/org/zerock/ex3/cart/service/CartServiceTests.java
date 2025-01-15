@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.ex3.cart.dto.AddCartItemDTO;
 import org.zerock.ex3.cart.dto.CartItemDTO;
+import org.zerock.ex3.cart.entity.ModifyCartItemDTO;
 
 import java.util.List;
 
@@ -40,6 +41,20 @@ public class CartServiceTests {
         .build();
     
     cartService.registerItem(addCartItemDTO);
+    
+  }
+  
+  @Test
+  public void testModifyItem() {
+    Long itemNo = 1L;
+    int qty = 1;
+    
+    ModifyCartItemDTO modifyCartItemDTO = ModifyCartItemDTO.builder()
+        .itemNo(itemNo)
+        .quantity(qty)
+        .build();
+    
+    cartService.modifyItem(modifyCartItemDTO);
     
   }
 }

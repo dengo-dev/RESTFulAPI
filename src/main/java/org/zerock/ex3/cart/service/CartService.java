@@ -9,6 +9,7 @@ import org.zerock.ex3.cart.dto.AddCartItemDTO;
 import org.zerock.ex3.cart.dto.CartItemDTO;
 import org.zerock.ex3.cart.entity.CartEntity;
 import org.zerock.ex3.cart.entity.CartItemEntity;
+import org.zerock.ex3.cart.entity.ModifyCartItemDTO;
 import org.zerock.ex3.cart.exception.CartTaskException;
 import org.zerock.ex3.cart.repository.CartItemRepository;
 import org.zerock.ex3.cart.repository.CartRepository;
@@ -89,5 +90,25 @@ public class CartService {
       log.error(e.getMessage());
       throw CartTaskException.Items.CART_ITEM_REGISTER_FAIL.value();
     }
+  }
+  
+  public void modifyItem(ModifyCartItemDTO modifyCartItemDTO) {
+    Long itemNo = modifyCartItemDTO.getItemNo();
+    int quantity = modifyCartItemDTO.getQuantity();
+    
+    Optional<CartItemEntity> result = cartItemRepository.findById(itemNo);
+    if (result.isEmpty()) {
+      throw CartTaskException.Items.NOT_FOUND_CARTITEM.value();
+    }
+    
+    CartItemEntity cartItemEntity = result.get();
+    
+    if (quantity <= 0) {
+      cartItemRepository.delete(cartItemEntity);
+      return;
+    }
+    
+    cartItemEntity.changeQuantity(quantity);
+    
   }
 }
