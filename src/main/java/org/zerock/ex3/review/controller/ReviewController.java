@@ -58,4 +58,25 @@ public class ReviewController {
 
     return ResponseEntity.ok().body(Map.of("result", "success"));
   }
+
+  @PutMapping("/{rno}")
+  public ResponseEntity<ReviewDTO> modify(
+          @PathVariable("rno") Long rno,
+          @RequestBody ReviewDTO reviewDTO,
+          Authentication authentication
+  ) {
+    log.info("modify: " + rno);
+
+    //번호 체크
+    if (!rno.equals(reviewDTO.getRno())) {
+      throw ReviewExceptions.REVIEWER_MISMATCH.get();
+    }
+    String currentUser = authentication.getName();
+    log.info("currentUser: " + currentUser);
+
+    if (!currentUser.equals(reviewDTO.getReviewer())) {
+      throw ReviewExceptions.REVIEWER_MISMATCH.get();
+    }
+    return ResponseEntity.ok().body(reviewService.modify(reviewDTO));
+  }
 }
