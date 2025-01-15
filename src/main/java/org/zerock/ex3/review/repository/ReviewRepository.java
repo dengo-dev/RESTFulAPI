@@ -9,7 +9,13 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
-  @Query("select r from ReviewEntity r join fetch r.productEntity where r.rno= :rno")
-  Optional<ReviewEntity> getWithProduct(@Param("rno") Long rno);
+//  @Query("select r from ReviewEntity r join fetch r.productEntity where r.rno= :rno")
+//  Optional<ReviewEntity> getWithProduct(@Param("rno") Long rno);
+
+  @Query("select r from ReviewEntity r " +
+          " join fetch  r.productEntity rp " +
+          " join fetch rp.images " +
+          " where r.rno = :rno")
+  Optional<ReviewEntity> getWithProduct( @Param("rno") Long rno);
 
 }

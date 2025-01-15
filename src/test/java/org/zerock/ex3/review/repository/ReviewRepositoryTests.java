@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.ex3.product.entity.ProductEntity;
@@ -55,7 +56,16 @@ public class ReviewRepositoryTests {
     reviewRepository.getWithProduct(rno).ifPresent(reviewEntity -> {
       System.out.println(reviewEntity);
       System.out.println(reviewEntity.getProductEntity());
+      System.out.println(reviewEntity.getProductEntity().getImages());
 
     });
+  }
+
+  @Test
+  @Transactional
+  @Commit
+  public void testRemove() {  // 단방향 참조이기 때문에 댓글만 삭제하면 된다.
+    Long rno = 1L;
+    reviewRepository.deleteById(rno);
   }
 }
