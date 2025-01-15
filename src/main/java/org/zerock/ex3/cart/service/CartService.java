@@ -111,4 +111,19 @@ public class CartService {
     cartItemEntity.changeQuantity(quantity);
     
   }
+  
+  
+  //장바구니 소유주 확인
+  public void checkItemHolder(String holder, Long itemNo) {
+    Optional<String> result = cartItemRepository.getHolderOfCartItem(itemNo);
+    
+    if (result.isEmpty()) {
+      throw CartTaskException.Items.NOT_FOUND_CARTITEM.value();
+    }
+    
+    if (!result.get().equals(holder)) {
+      throw CartTaskException.Items.NOT_CARTITEM_OWNER.value();
+    }
+    
+  }
 }

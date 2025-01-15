@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> {
-
+  
   @Query("select c " +
-          " from CartItemEntity c " +
-          " join fetch c.product " +
-          " join fetch c.product.images " +
-          " where c.cart.holder = :holder" +
-          " order by c.itemNo desc ")
+      " from CartItemEntity c " +
+      " join fetch c.product " +
+      " join fetch c.product.images " +
+      " where c.cart.holder = :holder" +
+      " order by c.itemNo desc ")
   Optional<List<CartItemEntity>> getCartItemsOfHolder(@Param("holder") String holder);
+  
+  @Query("select c.cart.holder " +
+      " from CartItemEntity  c " +
+      " where c.itemNo = :itemNo")
+  Optional<String> getHolderOfCartItem(@Param("itemNo") Long itemNo);
 }
