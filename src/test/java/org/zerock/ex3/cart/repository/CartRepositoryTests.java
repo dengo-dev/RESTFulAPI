@@ -65,4 +65,22 @@ public class CartRepositoryTests {
       System.out.println("---------------------");
     });
   }
+
+  @Test
+  @Transactional
+  @Commit
+  public void testModifyCartItem() {
+    Long itemNo = 3L;
+    int qty = 0;
+
+    Optional<CartItemEntity> result = cartItemRepository.findById(itemNo);
+    CartItemEntity cartItemEntity = result.get();
+
+    cartItemEntity.changeQuantity(qty);
+
+    if (cartItemEntity.getQuantity() <= 0) {
+      cartItemRepository.delete(cartItemEntity);
+      
+    }
+  }
 }
